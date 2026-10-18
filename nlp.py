@@ -71,3 +71,5 @@ pred_bow = nb_model.predict(X_test_bow)
 print(accuracy_score(y_test, pred_bow))
 
 # accuracy of bag of words with naive bayes is 76%
+
+
