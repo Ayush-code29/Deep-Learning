@@ -6,7 +6,11 @@ import string
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-     
+from sklearn.model_selection import train_test_split  
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score
 df = pd.read_csv('train.txt',sep = ';',header = None,names = ['text','emotion'])
 # print(df.head())
 unique_emotions = df['emotion'].unique()
@@ -53,3 +57,17 @@ def remove(txt):
 
 df['text'] = df['text'].apply(remove)
 # print(df.head())
+X_train, X_test, y_train, y_test = train_test_split(df['text'], df['emotion'], test_size=0.20, random_state=42)
+bow_vectorizer = CountVectorizer()
+X_train_bow = bow_vectorizer.fit_transform(X_train)
+X_test_bow = bow_vectorizer.transform(X_test)
+
+
+nb_model = MultinomialNB()
+nb_model.fit(X_train_bow, y_train)
+
+
+pred_bow = nb_model.predict(X_test_bow)
+print(accuracy_score(y_test, pred_bow))
+
+# accuracy of bag of words with naive bayes is 76%
