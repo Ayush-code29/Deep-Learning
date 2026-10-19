@@ -8,7 +8,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from sklearn.model_selection import train_test_split  
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-
+from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score
 df = pd.read_csv('train.txt',sep = ';',header = None,names = ['text','emotion'])
@@ -72,4 +72,23 @@ print(accuracy_score(y_test, pred_bow))
 
 # accuracy of bag of words with naive bayes is 76%
 
+tfidf_vectorizer = TfidfVectorizer()
+X_train_tfidf = tfidf_vectorizer.fit_transform(X_train)
+X_test_tfidf = tfidf_vectorizer.transform(X_test)
 
+
+nb2_model = MultinomialNB()
+nb2_model.fit(X_train_tfidf,y_train)
+
+y_pred = nb2_model.predict(X_test_tfidf)
+     
+
+print(accuracy_score(y_test, y_pred))
+
+# accuracy of it-idf and NB is 66 percent
+logistic_model = LogisticRegression(max_iter=1000)
+logistic_model.fit(X_train_tfidf,y_train)
+log_pred = logistic_model.predict(X_test_tfidf)
+print(accuracy_score(y_test,log_pred ))
+
+# accuracy of it-idf and is Logistic regression is 86 percent
