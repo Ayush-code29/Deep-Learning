@@ -48,4 +48,16 @@ per = Perceptron(max_iter=1000,random_state=42)
 per.fit(X_train_scaled,y_train)
 y_pred_percep = per.predict(X_test_scaled)
 acc_percep = accuracy_score(y_pred_percep,y_test)
-print("Accuracy of model using perceptron is",acc_percep)
+# print("Accuracy of model using perceptron is",acc_percep)
+y_train_categorical = to_categorical(y_train, num_classes = 3)
+y_test_categorical = to_categorical(y_test, num_classes = 3)
+# print(y_train_categorical)
+model = Sequential([
+    Dense(16,input_dim = 4,activation='relu'),
+    Dense(8,activation='relu'),
+    Dense(3,activation='softmax')
+])
+model.compile(optimizer = 'adam' , loss = 'categorical_crossentropy',metrics = ['accuracy'])
+history = model.fit(X_train_scaled,y_train_categorical,epochs = 100,batch_size = 8,validation_split = 0.2, verbose = 0)
+loss,acc = model.evaluate(X_test_scaled,y_test_categorical,verbose = 0)
+print("Model using ANN has accuracy and loss ",acc,loss)
